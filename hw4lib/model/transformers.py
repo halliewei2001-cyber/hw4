@@ -155,22 +155,22 @@ class DecoderOnlyTransformer(nn.Module):
             raise ValueError("target_lengths must be provided during training")
         
         # TODO: Implement forward
-        device = padded_targets.device
+        
 
         # TODO: Create padding mask for padded_targets on the same device as the input (use PadMask)
         pad_mask_dec = None
         if target_lengths is not None:
-            pad_mask_dec = PadMask(padded_targets, target_lengths).to(device)
+            pad_mask_dec = PadMask(padded_targets, target_lengths)
         
         # TODO: Create causal mask to prevent attending to future tokens on the same device as the input (use CausalMask)
-        causal_mask = CausalMask(padded_targets).to(device)
+        causal_mask = CausalMask(padded_targets)
 
         # TODO: Apply the embedding
-        x = NotImplementedError
+        x = self.target_embedding(padded_targets)
         # TODO: Apply positional encoding
-        x = NotImplementedError
+        x = self.positional_encoding(x)
         # TODO: Apply dropout 
-        x = NotImplementedError
+        x = self.dropout(x)
 
         # TODO: Pass through all decoder layers, save attention masks
         runnint_att = {}
@@ -180,18 +180,17 @@ class DecoderOnlyTransformer(nn.Module):
                 continue
             
             # TODO: Pass through decoder layer
-            x, attention = NotImplementedError, NotImplementedError
+            x, attention = self.dec_layers[i](x,key_padding_mask=pad_mask_dec,attn_mask=causal_mask)
             
             # TODO: Save attention weights  
             runnint_att['layer{}_dec_self'.format(i + 1)] = attention
 
         # TODO: Apply normalization
-        x = NotImplementedError
+        x = self.norm(x)
         # TODO: Linear layer (Final Projection) for next character prediction
-        seq_out = NotImplementedError
-        
+        seq_out = self.final_linear(x)
         # TODO: Return the output sequence and running attention weights
-        raise NotImplementedError
+        return seq_out, runnint_att
     
     def score(self, batch_prompts: torch.Tensor) -> torch.Tensor:
         '''
