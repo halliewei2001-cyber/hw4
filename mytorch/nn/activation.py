@@ -45,28 +45,18 @@ class Softmax:
            
         # Reshape input to 2D
         if len(shape) > 2:
-            dims = list(range(len(shape)))
-            dims.remove(self.dim)
-            dims.append(self.dim)
+            self.A = self.A
+            dLdA = dLdA
 
-            A_2d = self.A.permute(*dims).reshape(-1, C)
-            dLdA_2d = dLdA.permute(*dims).reshape(-1, C)
+        s = np.sum(dLdA * self.A, axis=self.dim, keepdims=True)
+        dLdZ = self.A * (dLdA - s)
 
-            self.A = A_2d
-            dLdA = dLdA_2d
-
-        inner = (dLdA * self.A).sum(dim=1, keepdim=True)
-        dLdZ_2d = self.A * (dLdA - inner)
-        dLdZ = dLdZ_2d.reshape(*shape)
 
         # Reshape back to original dimensions if necessary
         if len(shape) > 2:
             # Restore shapes to original
-            dLdZ = dLdZ_2d.reshape(*(shape[d] for d in dims))
-        
-            inv_dims = [dims.index(i) for i in range(len(dims))]
-            self.A = self.A.reshape(*(shape[d] for d in dims)).permute(*inv_dims)
-            dLdZ = dLdZ.permute(*inv_dims)
+            self.A = self.A
+            dLdZ = dLdZ
 
         return dLdZ
  
