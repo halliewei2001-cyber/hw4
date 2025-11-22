@@ -164,7 +164,10 @@ class SequenceGenerator:
             raise ValueError("Input x must be 2-dimensional (batch_size, seq_len)")
         if self.max_length < x.size(1):
             raise ValueError("max_length must be >= input sequence length")
-        
+        if not torch.is_tensor(x):
+            x = torch.tensor(x, dtype=torch.long)
+
+        x = x.to(self.device)
         # TODO: Implement greedy search
         batch_size = x.size(0)
         device = x.device
@@ -186,6 +189,7 @@ class SequenceGenerator:
             x = torch.cat([x, next_tokens.unsqueeze(1)], dim=1)
             finished = finished | (next_tokens == self.tokenizer.eos_id)
         x = self.post_process_sequence(x, self.tokenizer)
+        
         return x, scores
 
 
