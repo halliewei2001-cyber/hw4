@@ -63,9 +63,9 @@ class ASRTrainer(BaseTrainer):
         # How would you set the ignore_index? 
         # Use value in config to set the label_smoothing argument
         self.ce_criterion = nn.CrossEntropyLoss(
-            ignore_index=ignore_index,
+            ignore_index=self.tokenizer.pad_id,
             label_smoothing=label_smoothing
-        )
+            )
         
         # TODO: Initialize CTC loss if needed
         # You can use the pad token id as the blank index
