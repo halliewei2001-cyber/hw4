@@ -111,7 +111,7 @@ class ASRTrainer(BaseTrainer):
                 # TODO: get raw predictions and attention weights and ctc inputs from model
                 seq_out, curr_att, ctc_inputs = self.model(
                     padded_sources=feats.to(self.device),
-                    padded_targets=targets_shifted.to(self.device),
+                    padded_targets =targets_shifted.to(self.device),
                     source_lengths=feat_lengths.to(self.device),
                     target_lengths=transcript_lengths.to(self.device),
                 )
@@ -120,7 +120,7 @@ class ASRTrainer(BaseTrainer):
                 # Update running_att with the latest attention weights
                 running_att = curr_att
                 B, T_dec, V = seq_out.size()
-                
+                targets_golden=targets_golden.to(self.device)
                 # TODO: Calculate CE loss
                 ce_loss = self.ce_criterion(
                     seq_out.reshape(B * T_dec, V),
