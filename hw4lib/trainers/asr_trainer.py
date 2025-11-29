@@ -413,9 +413,8 @@ class ASRTrainer(BaseTrainer):
                 
                 # TODO: Encode speech features to hidden states
                 encoder_output, pad_mask_src, _, _ = self.model.encode(
-                    feats,
-                    feat_lengths=feat_lengths,
-                    return_att=False
+                    padded_sources=feats,
+                    source_lengths=feat_lengths
                 )
                 # Define scoring function for this batch
                 def get_score(x):
