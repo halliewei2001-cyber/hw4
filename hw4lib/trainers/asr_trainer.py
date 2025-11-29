@@ -112,9 +112,8 @@ class ASRTrainer(BaseTrainer):
                 seq_out, curr_att, ctc_inputs = self.model(
                     feats,
                     targets_shifted,
-                    feat_lengths=feat_lengths,
-                    transcript_lengths=transcript_lengths,
-                    return_att=True
+                    source_lengths=feat_lengths,
+                    target_lengths=transcript_lengths
                 )
                 
                 # Update running_att with the latest attention weights
