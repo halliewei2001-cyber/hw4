@@ -413,8 +413,8 @@ class ASRTrainer(BaseTrainer):
                 
                 # TODO: Encode speech features to hidden states
                 encoder_output, pad_mask_src, _, _ = self.model.encode(
-                    padded_sources=feats,
-                    source_lengths=feat_lengths
+                    padded_sources=feats.to(self.device),
+                    source_lengths=feat_lengths.to(self.device)
                 )
                 # Define scoring function for this batch
                 def get_score(x):
@@ -429,7 +429,12 @@ class ASRTrainer(BaseTrainer):
 
                 # TODO: Initialize prompts as a batch of SOS tokens
                 batch_size = feats.size(0)
-                prompts = NotImplementedError
+                prompts = torch.full(
+                    (batch_size, 1),
+                    self.tokenizer.sos_id,
+                    dtype=torch.long,
+                    device=self.device,
+                )
 
                 # TODO: Generate sequences
                 if recognition_config['beam_width'] > 1:
