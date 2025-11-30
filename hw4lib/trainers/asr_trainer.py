@@ -122,7 +122,7 @@ class ASRTrainer(BaseTrainer):
                 B, T_dec, V = seq_out.size()
                 targets_golden=targets_golden.to(self.device)
                 # TODO: Calculate CE loss
-
+                logits = seq_out.permute(0, 2, 1).contiguous()  
 
         
                 ce_loss = self.ce_criterion(
@@ -454,7 +454,7 @@ class ASRTrainer(BaseTrainer):
                     scores = scores[:, 0]
                 else:
                     # TODO: Generate sequences using greedy search
-                    seqs, scores = generator.generate_greedy(
+                    seqs, scores = generator.generate_beam(
                         prompts,
                         temperature=recognition_config['temperature'],
                         repeat_penalty=recognition_config['repeat_penalty']
