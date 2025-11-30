@@ -122,7 +122,7 @@ class ASRTrainer(BaseTrainer):
                 B, T_dec, V = seq_out.size()
                 targets_golden=targets_golden.to(self.device)
                 # TODO: Calculate CE loss
-                logits = seq_out.permute(0, 2, 1).contiguous()   # -> (B, V, T)
+
 
         
                 ce_loss = self.ce_criterion(
