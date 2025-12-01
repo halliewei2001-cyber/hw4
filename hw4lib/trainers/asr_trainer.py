@@ -382,7 +382,7 @@ class ASRTrainer(BaseTrainer):
             # Default config (greedy search)
             recognition_config = {
                 'num_batches': 5,
-                'beam_width': 2,
+                'beam_width': 5,
                 'temperature': 1.0,
                 'repeat_penalty': 1.0,
                 'lm_weight': 0.0,
@@ -452,13 +452,7 @@ class ASRTrainer(BaseTrainer):
                     # Pick best beam
                     seqs = seqs[:, 0, :]
                     scores = scores[:, 0]
-                else:
-                    # TODO: Generate sequences using greedy search
-                    seqs, scores = generator.generate_beam(
-                        prompts,
-                        temperature=recognition_config['temperature'],
-                        repeat_penalty=recognition_config['repeat_penalty']
-                    )
+                
                     
                 # Clean up
                 del feats, feat_lengths, encoder_output, pad_mask_src, prompts
